@@ -12,7 +12,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
-import { getWhatsappLink } from "@/lib/whatsapp";
+import { CtaLink } from "@/components/CtaLink";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { CookieBanner } from "./CookieBanner";
 import { ScrollAnimations } from "./ScrollAnimations";
@@ -133,7 +133,7 @@ const testimonials: Testimonial[] = [
 ];
 
 function Hero() {
-  const whatsappLink = getWhatsappLink();
+  
 
   return (
     <section className="hero">
@@ -143,9 +143,13 @@ function Hero() {
             Descontos de até <strong>98%</strong>. Fique hoje mesmo no Azul
           </h1>
           <p>Descontos Imperdiveis e condições especiais Aproveite suas oportunidades de forma segura e agil</p>
-          <a href={whatsappLink} target="_blank" rel="noreferrer" className="btn-primary">
-            Consultar Agora Grátis
-          </a>
+          <CtaLink
+  href="#"
+  className="btn-primary"
+  message="Olá, gostaria de consultar minhas ofertas disponíveis!"
+>
+  Consultar Agora Grátis
+</CtaLink>
         </div>
         <div className="hero-image">
           <Image src="/img/123.webp" alt="Consultoria Financeira" width={1017} height={1333} priority />
@@ -283,7 +287,7 @@ function Testimonials() {
 }
 
 function CTA() {
-  const whatsappLink = getWhatsappLink();
+  
 
   return (
     <section className="cta">
@@ -293,9 +297,13 @@ function CTA() {
           Nossa metodologia comprovada já ajudou milhões de brasileiros a alcançarem resultados excepcionais. Não perca mais tempo e comece sua
           jornada de sucesso hoje mesmo!
         </p>
-        <a href={whatsappLink} target="_blank" rel="noreferrer" className="btn-primary large">
-          Consultar Agora Grátis
-        </a>
+        <CtaLink
+  href="#"
+  className="btn-primary large"
+  message="Olá, gostaria de consultar minhas ofertas disponíveis!"
+>
+  Consultar Agora Grátis
+</CtaLink>
       </div>
     </section>
   );

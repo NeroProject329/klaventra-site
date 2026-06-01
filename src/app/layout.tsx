@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import { WhatsAppProvider } from "@/providers/WhatsAppProvider";
+
 
 export const metadata: Metadata = {
   title: "Consultoria Azul - Descontos de até 98%",
@@ -20,10 +22,14 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
+export default function RootLayout({
+  children,
+}: Readonly<{ children: ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body>{children}</body>
+      <body>
+        <WhatsAppProvider>{children}</WhatsAppProvider>
+      </body>
     </html>
   );
 }

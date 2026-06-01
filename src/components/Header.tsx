@@ -1,18 +1,25 @@
 import Link from "next/link";
-import { getWhatsappLink } from "@/lib/whatsapp";
+import { CtaLink } from "@/components/CtaLink";
 
 export function Header() {
-  const whatsappLink = getWhatsappLink();
-
   return (
     <header className="header">
       <div className="container">
-        <Link href="/" className="logo" aria-label="Página inicial da Consultoria Azul">
-         Braganholo e Ventura <span>Contabilidade e Assessoria</span>
+        <Link
+          href="/"
+          className="logo"
+          aria-label="Página inicial da Consultoria Azul"
+        >
+          Braganholo e Ventura <span>Contabilidade e Assessoria</span>
         </Link>
-        <a href={whatsappLink} target="_blank" rel="noreferrer" className="btn-header">
+
+        <CtaLink
+          href="#"
+          className="btn-header"
+          message="Olá, gostaria de falar com um consultor!"
+        >
           Fale Conosco
-        </a>
+        </CtaLink>
       </div>
     </header>
   );
