@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import { CtaLink } from "@/components/CtaLink";
 import { AnimatedCounter } from "./AnimatedCounter";
-import { CookieBanner } from "./CookieBanner";
 import { ScrollAnimations } from "./ScrollAnimations";
 import { TestimonialsEffects } from "./TestimonialsEffects";
 
@@ -320,7 +319,6 @@ export function HomePage() {
       <Benefits />
       <Testimonials />
       <CTA />
-      <CookieBanner />
     </>
   );
 }
