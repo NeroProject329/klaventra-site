@@ -141,7 +141,7 @@ function Hero() {
           <h1>
             Descontos de até <strong>98%</strong>. Fique hoje mesmo no Azul
           </h1>
-          <p>Descontos Imperdiveis e condições especiais Aproveite suas oportunidades de forma segura e agil</p>
+         
           <CtaLink
   href="#"
   className="btn-primary"

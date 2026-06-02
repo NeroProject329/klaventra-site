@@ -2529,3 +2529,59 @@ body {
     color: var(--primary);
     text-decoration: underline;
 }
+
+/* ===== Correção Footer Mobile - E-mail vazando ===== */
+
+.footer-company-grid > div {
+  min-width: 0;
+}
+
+.footer-company-grid a,
+.footer-company-grid span,
+.footer-company-grid address {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.footer-company-grid a {
+  display: inline-block;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .footer-company {
+    padding: 22px 18px;
+  }
+
+  .footer-company-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .footer-company-grid a {
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-company {
+    padding: 20px 14px;
+    border-radius: 16px;
+  }
+
+  .footer-company h3 {
+    font-size: 1rem;
+  }
+
+  .footer-company-grid strong {
+    font-size: 0.76rem;
+  }
+
+  .footer-company-grid span,
+  .footer-company-grid address,
+  .footer-company-grid a {
+    font-size: 0.84rem;
+  }
+}
