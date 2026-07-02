@@ -23,6 +23,7 @@ export function Footer() {
 
               <div>
                 <strong>CRC</strong>
+  
                 <span>GO-004472/O</span>
               </div>
 
