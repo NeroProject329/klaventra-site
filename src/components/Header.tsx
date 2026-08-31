@@ -9,8 +9,7 @@ export function Header() {
           href="/"
           className="logo"
           aria-label="Página inicial da Consultoria Azul"
-        >
-          Braganholo e Ventura <span>Contabilidade e Assessoria</span>
+        ><span>Contabilidade e Assessoria</span>
         </Link>
 
         <CtaLink
