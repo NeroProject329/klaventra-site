@@ -1,14 +1,15 @@
 "use client";
 
 import React from "react";
-import { useWhatsApp } from "@/providers/WhatsAppProvider";
+import {
+  buildWhatsAppRedirectPath,
+  DEFAULT_WHATSAPP_MESSAGE,
+} from "@/lib/whatsappRedirect";
 
 type CtaLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
   onlyScroll?: boolean;
   message?: string;
 };
-
-const DEFAULT_MESSAGE = "Olá, gostaria de verificar meus descontos!";
 
 export function CtaLink({
   href = "#",
@@ -18,26 +19,15 @@ export function CtaLink({
   message,
   ...rest
 }: CtaLinkProps) {
-  const { open, loading } = useWhatsApp();
-
-  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    if (onlyScroll && href.startsWith("#")) {
-      return;
-    }
-
-    event.preventDefault();
-
-    if (loading) return;
-
-    open(message || DEFAULT_MESSAGE);
-  };
+  const destination =
+    onlyScroll && href.startsWith("#")
+      ? href
+      : buildWhatsAppRedirectPath(message || DEFAULT_WHATSAPP_MESSAGE);
 
   return (
     <a
-      href={href}
+      href={destination}
       className={className}
-      onClick={handleClick}
-      style={{ pointerEvents: loading && !onlyScroll ? "none" : undefined }}
       {...rest}
     >
       {children}

@@ -6,6 +6,7 @@ import React, {
   useContext,
   useState,
 } from "react";
+import { buildWhatsAppRedirectPath } from "@/lib/whatsappRedirect";
 
 type ZapRoute = {
   routeType: "ADS" | "BASE";
@@ -75,36 +76,6 @@ function getApiBase(): string {
     .trim()
     .replace(/\/+$/, "")
     .replace(/\/api\/v1$/i, "");
-}
-
-function buildWaUrl(
-  phoneValue: string,
-  message: string,
-): string {
-  const phone = onlyDigits(phoneValue);
-  const text = encodeURIComponent(message);
-
-  return `https://wa.me/${phone}?text=${text}`;
-}
-
-function buildMessage(
-  route: ZapRoute,
-  customMessage?: string,
-): string {
-  const message =
-    customMessage?.trim() ||
-    route.message ||
-    "Olá! Gostaria de atendimento.";
-
-  if (
-    route.routeType === "ADS" &&
-    route.trackingCode &&
-    !message.includes(route.trackingCode)
-  ) {
-    return `${message}\nRef: ${route.trackingCode}`;
-  }
-
-  return message;
 }
 
 async function fetchRouteByDomain(
@@ -233,83 +204,9 @@ export function WhatsAppProvider({
     (customMessage?: string) => {
       if (loading) return;
 
-      /*
-       * A janela precisa ser criada diretamente no clique.
-       * Caso ela fosse aberta somente depois do await,
-       * o navegador poderia bloquear como popup.
-       */
-      const whatsappWindow = window.open(
-        "about:blank",
-        "_blank",
+      window.location.assign(
+        buildWhatsAppRedirectPath(customMessage),
       );
-
-      if (!whatsappWindow) {
-        window.alert(
-          "Permita popups neste site para abrir o WhatsApp.",
-        );
-        return;
-      }
-
-      whatsappWindow.opener = null;
-      setLoading(true);
-      setError(null);
-
-      void (async () => {
-        try {
-          /*
-           * A rota é solicitada no clique, e não ao carregar
-           * a página. Assim somente um clique real reserva
-           * uma posição da fila ADS.
-           */
-          const route = await fetchRouteByDomain(
-            getDomain(),
-          );
-
-          setPhone(route.phoneNumber);
-
-          const finalMessage = buildMessage(
-            route,
-            customMessage,
-          );
-
-          whatsappWindow.location.replace(
-            buildWaUrl(
-              route.phoneNumber,
-              finalMessage,
-            ),
-          );
-        } catch (caught) {
-          const fallback = onlyDigits(
-            FALLBACK_PHONE,
-          );
-
-          if (fallback) {
-            setPhone(fallback);
-
-            whatsappWindow.location.replace(
-              buildWaUrl(
-                fallback,
-                customMessage?.trim() ||
-                  "Olá! Gostaria de atendimento.",
-              ),
-            );
-
-            return;
-          }
-
-          const errorMessage =
-            caught instanceof Error
-              ? caught.message
-              : "WhatsApp indisponível no momento.";
-
-          whatsappWindow.close();
-          setPhone("");
-          setError(errorMessage);
-          window.alert(errorMessage);
-        } finally {
-          setLoading(false);
-        }
-      })();
     },
     [loading],
   );
