@@ -4,21 +4,11 @@ import React, {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
-import { buildWhatsAppRedirectPath } from "@/lib/whatsappRedirect";
 
-type ZapRoute = {
-  routeType: "ADS" | "BASE";
-  trackingCode: string | null;
-  phoneNumber: string;
-  displayName: string;
-  message: string;
-  waUrl: string;
-  reservationExpiresAt: string | null;
-};
-
-type WhatsAppContextValue = {
+type WhatsContextValue = {
   loading: boolean;
   phone: string;
   error: string | null;
@@ -26,78 +16,40 @@ type WhatsAppContextValue = {
   open: (message?: string) => void;
 };
 
-const WhatsAppContext =
-  createContext<WhatsAppContextValue | null>(null);
+const WhatsAppContext = createContext<WhatsContextValue | null>(null);
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_ZAP_API_BASE || "";
+const API_BASE = process.env.NEXT_PUBLIC_ZAP_API_BASE;
+const FALLBACK_PHONE = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
-const FALLBACK_PHONE =
-  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
+function getDomain(): string {
+  if (typeof window === "undefined") return "";
 
-const LOCAL_TEST_DOMAIN =
-  process.env.NEXT_PUBLIC_ZAP_TEST_DOMAIN || "";
+  return window.location.hostname.trim().toLowerCase().replace(/^www\./, "");
+}
 
 function onlyDigits(value: unknown): string {
   return String(value ?? "").replace(/\D/g, "");
 }
 
-function normalizeDomain(value: string): string {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/^https?:\/\//, "")
-    .split("/")[0]
-    .split(":")[0]
-    .replace(/^www\./, "")
-    .replace(/\.$/, "");
-}
-
-function getDomain(): string {
-  if (typeof window === "undefined") return "";
-
-  const currentDomain = normalizeDomain(
-    window.location.hostname,
+function buildWaUrl(phoneDigits: string, message?: string): string {
+  const phone = onlyDigits(phoneDigits);
+  const text = encodeURIComponent(
+    message || "Olá, gostaria de verificar meus descontos!",
   );
 
-  const isLocal =
-    currentDomain === "localhost" ||
-    currentDomain === "127.0.0.1";
-
-  if (isLocal && LOCAL_TEST_DOMAIN) {
-    return normalizeDomain(LOCAL_TEST_DOMAIN);
-  }
-
-  return currentDomain;
+  return `https://wa.me/${phone}?text=${text}`;
 }
 
-function getApiBase(): string {
-  return API_BASE
-    .trim()
-    .replace(/\/+$/, "")
-    .replace(/\/api\/v1$/i, "");
-}
-
-async function fetchRouteByDomain(
+async function fetchPhoneByDomain(
   domain: string,
   signal?: AbortSignal,
-): Promise<ZapRoute> {
-  const apiBase = getApiBase();
-
-  if (!apiBase) {
-    throw new Error(
-      "NEXT_PUBLIC_ZAP_API_BASE não configurada.",
-    );
+): Promise<string> {
+  if (!API_BASE) {
+    throw new Error("NEXT_PUBLIC_ZAP_API_BASE não configurada");
   }
 
-  if (!domain) {
-    throw new Error(
-      "Não foi possível identificar o domínio do site.",
-    );
-  }
-
-  const url =
-    `${apiBase}/zap?domain=${encodeURIComponent(domain)}`;
+  const apiBase = API_BASE.trim().replace(/\/+$/, "");
+  const url = `${apiBase}/zap?domain=${encodeURIComponent(domain)}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -109,54 +61,21 @@ async function fetchRouteByDomain(
   });
 
   if (!response.ok) {
-    throw new Error(
-      `A API de roteamento respondeu com HTTP ${response.status}.`,
-    );
+    throw new Error(`HTTP ${response.status}`);
   }
 
-  const data = (await response.json()) as Partial<ZapRoute>;
+  const data = await response.json();
+  const phone =
+    onlyDigits(data?.phone) ||
+    onlyDigits(data?.numero) ||
+    onlyDigits(data?.data?.phone) ||
+    onlyDigits(data?.data?.numero);
 
-  const phoneNumber = onlyDigits(data.phoneNumber);
-
-  if (!phoneNumber) {
-    throw new Error(
-      "A API não retornou um número válido.",
-    );
+  if (!phone) {
+    throw new Error("Número não retornado");
   }
 
-  if (
-    data.routeType !== "ADS" &&
-    data.routeType !== "BASE"
-  ) {
-    throw new Error(
-      "A API retornou um tipo de rota inválido.",
-    );
-  }
-
-  return {
-    routeType: data.routeType,
-    trackingCode:
-      typeof data.trackingCode === "string"
-        ? data.trackingCode
-        : null,
-    phoneNumber,
-    displayName:
-      typeof data.displayName === "string"
-        ? data.displayName
-        : "",
-    message:
-      typeof data.message === "string"
-        ? data.message
-        : "Olá! Gostaria de atendimento.",
-    waUrl:
-      typeof data.waUrl === "string"
-        ? data.waUrl
-        : "",
-    reservationExpiresAt:
-      typeof data.reservationExpiresAt === "string"
-        ? data.reservationExpiresAt
-        : null,
-  };
+  return phone;
 }
 
 export function WhatsAppProvider({
@@ -164,24 +83,21 @@ export function WhatsAppProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [loading, setLoading] = useState(false);
-  const [phone, setPhone] = useState(
-    () => onlyDigits(FALLBACK_PHONE),
-  );
-  const [error, setError] =
-    useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [phone, setPhone] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    const domain = getDomain();
+
     setLoading(true);
-    setError(null);
 
     try {
-      const route = await fetchRouteByDomain(
-        getDomain(),
-      );
+      const phoneFromApi = await fetchPhoneByDomain(domain);
 
-      setPhone(route.phoneNumber);
-    } catch (caught) {
+      setPhone(phoneFromApi);
+      setError(null);
+    } catch {
       const fallback = onlyDigits(FALLBACK_PHONE);
 
       if (fallback) {
@@ -189,50 +105,45 @@ export function WhatsAppProvider({
         setError(null);
       } else {
         setPhone("");
-        setError(
-          caught instanceof Error
-            ? caught.message
-            : "WhatsApp indisponível no momento.",
-        );
+        setError("WhatsApp indisponível no momento.");
       }
     } finally {
       setLoading(false);
     }
   }, []);
 
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
+
   const open = useCallback(
-    (customMessage?: string) => {
+    (message?: string) => {
       if (loading) return;
 
-      window.location.assign(
-        buildWhatsAppRedirectPath(customMessage),
-      );
+      if (!phone) {
+        window.alert(error || "WhatsApp indisponível no momento.");
+        return;
+      }
+
+      const url = buildWaUrl(phone, message);
+
+      window.open(url, "_blank", "noopener,noreferrer");
     },
-    [loading],
+    [loading, phone, error],
   );
 
   return (
-    <WhatsAppContext.Provider
-      value={{
-        loading,
-        phone,
-        error,
-        refresh,
-        open,
-      }}
-    >
+    <WhatsAppContext.Provider value={{ loading, phone, error, refresh, open }}>
       {children}
     </WhatsAppContext.Provider>
   );
 }
 
-export function useWhatsApp(): WhatsAppContextValue {
+export function useWhatsApp(): WhatsContextValue {
   const context = useContext(WhatsAppContext);
 
   if (!context) {
-    throw new Error(
-      "useWhatsApp precisa estar dentro do WhatsAppProvider.",
-    );
+    throw new Error("useWhatsApp precisa estar dentro do WhatsAppProvider");
   }
 
   return context;
