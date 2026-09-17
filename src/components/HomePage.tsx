@@ -86,7 +86,6 @@ const processSteps = [
 
 const benefits: Benefit[] = [
   { label: "Consulta Grátis", icon: Gem },
-  { label: "Até 98% OFF", icon: TrendingDown },
   { label: "100% Online", icon: Laptop },
   { label: "Sem Burocracia", icon: Zap },
   { label: "Resultado Rápido", icon: Rocket },
@@ -138,9 +137,9 @@ function Hero() {
     <section className="hero">
       <div className="container">
         <div className="hero-content">
-          <h1>
-            Descontos de até <strong>98%</strong>. Fique hoje mesmo no Azul
-          </h1>
+          <h2>
+            Descubra as <strong>condições</strong> disponíveis e encontre opções para você.
+          </h2>
          
           <CtaLink
   href="#"
@@ -164,16 +163,16 @@ function Stats() {
       <div className="container">
         <div className="stats-grid">
           <div className="stat-item">
-            <AnimatedCounter target={16000000} suffix="+" />
-            <div className="stat-label">Clientes Atendidos</div>
+            <p>Atendimento Online</p>
+            <div className="stat-label">Canais digitais de atendimento</div>
           </div>
           <div className="stat-item">
-            <AnimatedCounter target={12} suffix="+" />
-            <div className="stat-label">Anos de Experiência</div>
+            <p>Análise Individual</p>
+            <div className="stat-label">Avaliação de cada solicitação</div>
           </div>
           <div className="stat-item">
-            <AnimatedCounter target={98} suffix="%" />
-            <div className="stat-label">Satisfação dos Clientes</div>
+            <p>Equipe de Atendimento</p>
+            <div className="stat-label">Canais digitais de atendimento</div>
           </div>
         </div>
       </div>
@@ -293,8 +292,7 @@ function CTA() {
       <div className="container">
         <h2>Pronto para Transformar sua Situação?</h2>
         <p>
-          Nossa metodologia comprovada já ajudou milhões de brasileiros a alcançarem resultados excepcionais. Não perca mais tempo e comece sua
-          jornada de sucesso hoje mesmo!
+          Nossa equipe analisa cada solicitação individualmente e apresenta as condições disponíveis de acordo com cada situação. Entre em contato para receber mais informações e esclarecer suas dúvidas.
         </p>
         <CtaLink
   href="#"

@@ -306,8 +306,8 @@ body {
     z-index: 2;
 }
 
-.hero-content h1 {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+.hero-content h2 {
+    font-size: clamp(1.6rem, 4vw, 3rem);
     font-weight: 700;
     font-family: 'Poppins', sans-serif;
     line-height: 1.15;
@@ -316,7 +316,7 @@ body {
     letter-spacing: -0.8px;
 }
 
-.hero-content h1 strong {
+.hero-content h2 strong {
     color: #FFD700;
     font-weight: 800;
     display: inline-block;
@@ -418,6 +418,14 @@ body {
     border-radius: 16px;
     transition: all 0.3s ease;
     border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.stat-item p{
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+    line-height: 1;
 }
 
 .stat-item:hover {
