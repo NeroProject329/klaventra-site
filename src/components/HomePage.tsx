@@ -150,7 +150,7 @@ function Hero() {
 </CtaLink>
         </div>
         <div className="hero-image">
-          <Image src="/img/123.webp" alt="Consultoria Financeira" width={1017} height={1333} priority />
+          <Image src="/img/semdesconto.png" alt="Consultoria Financeira" width={1017} height={1333} priority />
         </div>
       </div>
     </section>
