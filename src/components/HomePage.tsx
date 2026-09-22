@@ -131,23 +131,24 @@ const testimonials: Testimonial[] = [
 ];
 
 function Hero() {
-  
-
   return (
     <section className="hero">
       <div className="container">
         <div className="hero-content">
+          <p className="hero-kicker">Atendimento online e personalizado</p>
           <h2>
             Descubra as <strong>condições</strong> disponíveis e encontre opções para você.
           </h2>
-         
+          <p className="hero-description">
+            Receba uma análise individual e conheça as alternativas disponíveis para a sua situação.
+          </p>
           <CtaLink
-  href="#"
-  className="btn-primary"
-  message="Olá, gostaria de consultar minhas ofertas disponíveis!"
->
-  Consultar Agora Grátis
-</CtaLink>
+            href="#"
+            className="btn-primary"
+            message="Olá, gostaria de consultar minhas ofertas disponíveis!"
+          >
+            Consultar agora
+          </CtaLink>
         </div>
         <div className="hero-image">
           <Image src="/img/semmegaf.png" alt="Consultoria Financeira" width={1017} height={1333} priority />
@@ -182,7 +183,7 @@ function Stats() {
 
 function WhyChoose() {
   return (
-    <section className="why-choose">
+    <section className="why-choose" id="diferenciais">
       <div className="container">
         <h2 className="section-title">Por que Escolher Nossos Serviços?</h2>
         <p className="section-subtitle">Descubra as vantagens de trabalhar conosco</p>
@@ -205,7 +206,7 @@ function WhyChoose() {
 
 function Process() {
   return (
-    <section className="process">
+    <section className="process" id="processo">
       <div className="container">
         <h2 className="section-title">Nosso Processo de Consultoria</h2>
         <p className="section-subtitle">Uma abordagem estruturada e comprovada para transformar sua situação</p>
@@ -250,7 +251,7 @@ function Testimonials() {
   const loopTestimonials = [...testimonials, ...testimonials];
 
   return (
-    <section className="testimonials">
+    <section className="testimonials" id="depoimentos">
       <TestimonialsEffects />
       <div className="container">
         <h2 className="section-title">O que Nossos Clientes Dizem</h2>
@@ -285,8 +286,6 @@ function Testimonials() {
 }
 
 function CTA() {
-  
-
   return (
     <section className="cta">
       <div className="container">
@@ -295,12 +294,12 @@ function CTA() {
           Nossa equipe analisa cada solicitação individualmente e apresenta as condições disponíveis de acordo com cada situação. Entre em contato para receber mais informações e esclarecer suas dúvidas.
         </p>
         <CtaLink
-  href="#"
-  className="btn-primary large"
-  message="Olá, gostaria de consultar minhas ofertas disponíveis!"
->
-  Consultar Agora Grátis
-</CtaLink>
+          href="#"
+          className="btn-primary large"
+          message="Olá, gostaria de consultar minhas ofertas disponíveis!"
+        >
+          Falar com um atendente
+        </CtaLink>
       </div>
     </section>
   );

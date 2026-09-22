@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Headphones } from "lucide-react";
 import { CtaLink } from "@/components/CtaLink";
 
 export function Header() {
@@ -9,15 +10,25 @@ export function Header() {
           href="/"
           className="logo"
           aria-label="Página inicial da Consultoria Azul"
-        ><span>Contabilidade e Assessoria</span>
+        >
+          <span className="logo-icon" aria-hidden="true">
+            <Headphones />
+          </span>
+          <span>Consultoria <strong>Azul</strong></span>
         </Link>
+
+        <nav className="header-nav" aria-label="Navegação principal">
+          <Link href="#diferenciais">Diferenciais</Link>
+          <Link href="#processo">Como funciona</Link>
+          <Link href="#depoimentos">Depoimentos</Link>
+        </nav>
 
         <CtaLink
           href="#"
           className="btn-header"
           message="Olá, gostaria de falar com um consultor!"
         >
-          Fale Conosco
+          Consultar agora
         </CtaLink>
       </div>
     </header>
